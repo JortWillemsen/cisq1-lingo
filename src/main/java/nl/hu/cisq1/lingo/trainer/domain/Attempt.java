@@ -6,5 +6,13 @@ import java.util.List;
 
 public class Attempt {
     private Word attempt;
-    private List<Mark> feedback;
+    private Feedback feedback;
+
+    public Attempt(Word attempt) {
+        this.attempt = attempt;
+    }
+
+    public Feedback getFeedback() {
+        return feedback.calculate();
+    }
 }

@@ -8,5 +8,7 @@ public class Round {
     private Word wordToGuess;
     private List<Attempt> attempts;
 
-    public Round() {}
+    public Round(Word wordToGuess) {
+        this.wordToGuess = wordToGuess;
+    }
 }
