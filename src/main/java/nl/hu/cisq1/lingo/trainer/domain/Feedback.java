@@ -27,6 +27,7 @@ public class Feedback {
 
     //TODO: This is flawed, feedback should give only present when the character isn't guessed correctly.
     public List<Mark> calculate() {
+        this.feedback.clear();
         for(int i = 0; i < this.wordToGuess.length(); i++) {
             if(!Character.isLetter(this.guess.charAt(i))) {
                 this.feedback.add(Mark.INVALID);

@@ -23,7 +23,7 @@ public class Attempt {
     public Attempt(String guess, String wordToGuess, String hint) {
         this.guess = guess;
         this.feedback = new Feedback(guess, wordToGuess);
-        this. hint = hint;
+        this.hint = hint;
     }
 
     public List<Mark> getFeedback() {
