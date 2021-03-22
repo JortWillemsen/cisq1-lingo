@@ -36,6 +36,19 @@ class GameTest {
         assertEquals(GameStatus.ROUND_WON, game.getStatus());
     }
 
+    @Test
+    @DisplayName("Not guessing the word correctly should not update the score")
+    void testNotCalculateScore() {
+        game.beginGame("hollos");
+        game.makeAttempt("hoolos");
+        game.makeAttempt("hoolos");
+        game.makeAttempt("hoolos");
+        game.makeAttempt("hoolos");
+        game.makeAttempt("hoolos");
+        game.makeAttempt("hoolos");
+        assertEquals(0, game.getScore());
+    }
+
     @ParameterizedTest
     @MethodSource("inputMaxAttempts")
     @DisplayName("Exceeding max attempts results in throwing an exception")
@@ -51,6 +64,22 @@ class GameTest {
                 Arguments.of(1, "moeser", GameStatus.GAME_PLAYING),
                 Arguments.of(1, "moeder", GameStatus.ROUND_WON),
                 Arguments.of(4, "moeser", GameStatus.GAME_ELIMINATED)
+        );
+    }
+
+    @ParameterizedTest
+    @MethodSource("provideLenghts")
+    @DisplayName("According to the current word we should calculate the lenght of the next word")
+    void testWordLenghts(String word, int nextLenght) {
+        this.game.beginGame(word);
+        assertEquals(nextLenght, this.game.provideLenghtOfNewWord());
+    }
+
+    static Stream<Arguments> provideLenghts() {
+        return Stream.of(
+                Arguments.of("fives", 6),
+                Arguments.of("sixess", 7),
+                Arguments.of("sevenss", 5)
         );
     }
 
