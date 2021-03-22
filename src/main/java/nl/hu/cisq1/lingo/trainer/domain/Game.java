@@ -95,6 +95,7 @@ public class Game {
     public Attempt makeAttempt(String guess) {
         if(this.getActiveRound().getTries() > 4){
             this.finished = true;
+            this.endRound();
         }
 
         Attempt attempt = this.activeRound.makeAttempt(guess);

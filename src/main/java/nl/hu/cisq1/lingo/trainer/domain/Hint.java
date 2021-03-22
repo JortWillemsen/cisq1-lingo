@@ -23,7 +23,7 @@ public class Hint {
 
     public Hint calculate(String attempt) {
         for(int i = 0; i < wordToGuess.length(); i++) {
-            if(attempt.charAt(i) == this.hint.get(i) || Character.isLetter(this.hint.get(i))) {
+            if(Character.isLetter(this.hint.get(i))) {
                 continue;
             }
             if(wordToGuess.charAt(i) == attempt.charAt(i)) {
