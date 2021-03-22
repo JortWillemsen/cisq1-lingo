@@ -6,7 +6,7 @@ import java.util.List;
 
 public class Hint {
     private String wordToGuess;
-    private List<Character> hint = new ArrayList<>();
+    private List<Character> characters = new ArrayList<>();
 
     public Hint(String wordToGuess) {
         this.wordToGuess = wordToGuess;
@@ -15,19 +15,19 @@ public class Hint {
 
     private void initialize() {
         int size = wordToGuess.length();
-        this.hint.add(wordToGuess.charAt(0));
+        this.characters.add(wordToGuess.charAt(0));
         for (int i = 0; i < size - 1; i++) {
-            this.hint.add('.');
+            this.characters.add('.');
         }
     }
 
     public Hint calculate(String attempt) {
         for (int i = 0; i < wordToGuess.length(); i++) {
-            if (Character.isLetter(this.hint.get(i))) {
+            if (Character.isLetter(this.characters.get(i))) {
                 continue;
             }
             if (wordToGuess.charAt(i) == attempt.charAt(i)) {
-                this.hint.set(i, wordToGuess.charAt(i));
+                this.characters.set(i, wordToGuess.charAt(i));
             }
         }
         return this;
@@ -35,7 +35,7 @@ public class Hint {
 
     public String getHint() {
         StringBuilder sb = new StringBuilder();
-        this.hint.forEach(sb::append);
+        this.characters.forEach(sb::append);
         return sb.toString();
     }
 }

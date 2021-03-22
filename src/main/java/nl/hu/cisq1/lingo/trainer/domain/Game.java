@@ -15,7 +15,6 @@ public class Game {
 
     @Column
     private int score;
-    private boolean finished;
     private GameStatus status;
 
     @OneToMany
@@ -53,8 +52,6 @@ public class Game {
     }
 
     public Round nextRound(String wordToGuess) {
-        System.out.println("Beginning new round");
-
         this.activeRound = new Round(wordToGuess);
         return this.activeRound.beginRound();
     }
@@ -62,13 +59,14 @@ public class Game {
 
 
     private void checkStatus() {
-        if(this.rounds.size() == 0 && this.activeRound == null) {
+        if(this.rounds.isEmpty() && this.activeRound == null) {
             this.status = GameStatus.GAME_STARTING;
             return;
         }
         if(this.activeRound != null && this.activeRound.getTries() < 5) {
             this.status = GameStatus.GAME_PLAYING;
         }
+        assert this.activeRound != null;
         if(this.activeRound.getTries() > 4) {
             this.status = GameStatus.GAME_ELIMINATED;
         }
@@ -78,7 +76,6 @@ public class Game {
     }
 
     private void endRound() {
-        System.out.println("Ending round");
         this.rounds.add(this.activeRound);
         calculateScore();
     }
@@ -91,7 +88,6 @@ public class Game {
 
     public Attempt makeAttempt(String guess) {
         if(this.getActiveRound().getTries() > 4){
-            this.finished = true;
             this.endRound();
         }
 
