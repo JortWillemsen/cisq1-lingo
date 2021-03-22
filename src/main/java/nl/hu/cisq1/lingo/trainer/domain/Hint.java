@@ -16,17 +16,17 @@ public class Hint {
     private void initialize() {
         int size = wordToGuess.length();
         this.hint.add(wordToGuess.charAt(0));
-        for(int i = 0; i < size - 1; i++) {
+        for (int i = 0; i < size - 1; i++) {
             this.hint.add('.');
         }
     }
 
     public Hint calculate(String attempt) {
-        for(int i = 0; i < wordToGuess.length(); i++) {
-            if(Character.isLetter(this.hint.get(i))) {
+        for (int i = 0; i < wordToGuess.length(); i++) {
+            if (Character.isLetter(this.hint.get(i))) {
                 continue;
             }
-            if(wordToGuess.charAt(i) == attempt.charAt(i)) {
+            if (wordToGuess.charAt(i) == attempt.charAt(i)) {
                 this.hint.set(i, wordToGuess.charAt(i));
             }
         }

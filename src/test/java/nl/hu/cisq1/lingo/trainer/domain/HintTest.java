@@ -13,20 +13,17 @@ import java.util.stream.Stream;
 import static org.junit.jupiter.api.Assertions.*;
 
 class HintTest {
-    private static final Game game = new Game();
-
-    @BeforeAll
-    static void initialize() {
-        String word = "teste";
-        game.beginGame(word);
+    private Hint hint;
+    @BeforeEach
+    void initialize() {
+        this.hint = new Hint("teste");
     }
 
     @ParameterizedTest
     @MethodSource("provideHints")
-    @DisplayName("Exceeding max attempts results in throwing an exception")
+    @DisplayName("Test if the returned hint is calculated correctly")
     void testHints(String guess, String expectedHint) {
-        Attempt attempt = game.makeAttempt(guess);
-        assertEquals(expectedHint, attempt.getHint());
+        assertEquals(expectedHint, hint.calculate(guess).getHint());
     }
 
     static Stream<Arguments> provideHints() {
@@ -34,7 +31,6 @@ class HintTest {
                 Arguments.of("00000", "t...."),
                 Arguments.of("telol", "te..."),
                 Arguments.of("tesle", "tes.e"),
-                Arguments.of("tosto", "teste"),
                 Arguments.of("teste", "teste")
         );
     }
