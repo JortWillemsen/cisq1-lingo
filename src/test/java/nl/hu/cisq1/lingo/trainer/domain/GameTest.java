@@ -45,7 +45,6 @@ class GameTest {
         game.makeAttempt("hoolos");
         game.makeAttempt("hoolos");
         game.makeAttempt("hoolos");
-        game.makeAttempt("hoolos");
         assertEquals(0, game.getScore());
     }
 
@@ -96,7 +95,6 @@ class GameTest {
     @DisplayName("If tries more than five we should end the game.")
     void testTriesMoreThenFive() {
         this.game.beginGame("teste");
-        this.game.makeAttempt("tests");
         this.game.makeAttempt("tests");
         this.game.makeAttempt("tests");
         this.game.makeAttempt("tests");

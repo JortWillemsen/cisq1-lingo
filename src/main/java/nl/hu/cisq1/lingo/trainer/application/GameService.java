@@ -1,7 +1,9 @@
 package nl.hu.cisq1.lingo.trainer.application;
 
 import nl.hu.cisq1.lingo.trainer.data.SpringGameRepository;
+import nl.hu.cisq1.lingo.trainer.domain.Attempt;
 import nl.hu.cisq1.lingo.trainer.domain.Game;
+import nl.hu.cisq1.lingo.trainer.exception.GameNotFoundException;
 import nl.hu.cisq1.lingo.words.application.WordService;
 import org.springframework.stereotype.Service;
 
@@ -25,4 +27,18 @@ public class GameService {
         this.persistGame(game);
         return game;
     }
+
+    public Attempt makeAttempt(String guess) {
+        Game game = this.getActiveGame();
+        Attempt attempt = game.makeAttempt(guess);
+        this.persistGame(game);
+        return attempt;
+    }
+
+    public Game getActiveGame() {
+        return this.gameRepository.getGameByFinished(false)
+                .orElseThrow(() -> new GameNotFoundException("No active game found..."));
+    }
+
+
 }

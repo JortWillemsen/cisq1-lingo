@@ -15,6 +15,7 @@ public class Game {
 
     @Column
     private int score;
+    private boolean finished = false;
     @Enumerated(EnumType.STRING)
     private GameStatus status;
 
@@ -67,11 +68,10 @@ public class Game {
         if(this.activeRound != null && this.activeRound.getTries() < 5) {
             this.status = GameStatus.GAME_PLAYING;
         }
-        assert this.activeRound != null;
-        if(this.activeRound.getTries() > 4) {
+        if(this.activeRound != null && this.activeRound.getTries() > 4) {
             this.status = GameStatus.GAME_ELIMINATED;
         }
-        if(this.activeRound.getHint().getHint().equals(this.activeRound.getWordToGuess())) {
+        if(this.activeRound != null && this.activeRound.getHint().getHint().equals(this.activeRound.getWordToGuess())) {
             this.status = GameStatus.ROUND_WON;
         }
     }
@@ -81,6 +81,14 @@ public class Game {
         calculateScore();
     }
 
+    private void finishGame() {
+        this.finished = true;
+    }
+
+    private boolean isFinished() {
+        return this.finished;
+    }
+
     private void calculateScore() {
         checkStatus();
         if(this.status == GameStatus.ROUND_WON)
@@ -88,6 +96,11 @@ public class Game {
     }
 
     public Attempt makeAttempt(String guess) {
+        checkStatus();
+        if(this.status != GameStatus.GAME_PLAYING) {
+            throw new IllegalStateException("You cannot make an attempt");
+        }
+
         if(this.getActiveRound().getTries() > 4){
             this.endRound();
         }
