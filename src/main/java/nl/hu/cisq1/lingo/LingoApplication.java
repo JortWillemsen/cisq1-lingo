@@ -1,8 +1,6 @@
 package nl.hu.cisq1.lingo;
 
-import nl.hu.cisq1.lingo.trainer.data.SpringGameRepository;
 import nl.hu.cisq1.lingo.trainer.domain.*;
-import nl.hu.cisq1.lingo.trainer.service.GameService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

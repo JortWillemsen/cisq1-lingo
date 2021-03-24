@@ -1,5 +1,7 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
+import org.hibernate.annotations.Cascade;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -7,20 +9,19 @@ import java.util.List;
 @Entity
 @Table(name = "game")
 public class Game {
-
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
-    @Column(name = "id")
+    @GeneratedValue(strategy=GenerationType.AUTO)
     private Long id;
 
     @Column
     private int score;
+    @Enumerated(EnumType.STRING)
     private GameStatus status;
 
     @OneToMany
     private List<Round> rounds = new ArrayList<>();
 
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
     private Round activeRound;
 
     public Game() {
