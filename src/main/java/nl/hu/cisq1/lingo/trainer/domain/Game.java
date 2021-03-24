@@ -53,14 +53,24 @@ public class Game {
         return rounds;
     }
 
+    public boolean isFinished() {
+        return this.finished;
+    }
+
     public Round nextRound(String wordToGuess) {
+        if(this.status == GameStatus.GAME_PLAYING) {
+            throw new IllegalStateException("Round is already ongoing");
+        }
         this.activeRound = new Round(wordToGuess);
+        checkStatus();
         return this.activeRound.beginRound();
     }
 
-
-
     private void checkStatus() {
+        if(this.finished) {
+            this.status = GameStatus.GAME_FINISHED;
+            return;
+        }
         if(this.rounds.isEmpty() && this.activeRound == null) {
             this.status = GameStatus.GAME_STARTING;
             return;
@@ -79,14 +89,6 @@ public class Game {
     private void endRound() {
         this.rounds.add(this.activeRound);
         calculateScore();
-    }
-
-    private void finishGame() {
-        this.finished = true;
-    }
-
-    private boolean isFinished() {
-        return this.finished;
     }
 
     private void calculateScore() {
@@ -121,5 +123,13 @@ public class Game {
         };
     }
 
+    public void finishGame() {
+        this.finished = true;
+        checkStatus();
+    }
 
+
+    public Long getId() {
+        return this.id;
+    }
 }

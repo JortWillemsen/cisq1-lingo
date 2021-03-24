@@ -7,4 +7,5 @@ import java.util.Optional;
 
 public interface SpringGameRepository extends JpaRepository<Game, Long> {
     Optional<Game> getGameByFinished(boolean finished);
+    Optional<Game> getGameById(Long id);
 }

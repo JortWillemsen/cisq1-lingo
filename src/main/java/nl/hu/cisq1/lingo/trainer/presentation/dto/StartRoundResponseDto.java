@@ -1,9 +1,9 @@
 package nl.hu.cisq1.lingo.trainer.presentation.dto;
 
-public class StartGameResponseDto {
+public class StartRoundResponseDto {
     public String hint;
 
-    public StartGameResponseDto(String hint) {
+    public StartRoundResponseDto(String hint) {
         this.hint = hint;
     }
 }

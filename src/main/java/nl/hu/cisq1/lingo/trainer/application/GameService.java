@@ -35,9 +35,27 @@ public class GameService {
         return attempt;
     }
 
+    public Game startNextRound() {
+        Game game = this.getActiveGame();
+        game.nextRound(wordService.provideRandomWord(game.provideLenghtOfNewWord()));
+        this.persistGame(game);
+        return game;
+    }
+
     public Game getActiveGame() {
         return this.gameRepository.getGameByFinished(false)
                 .orElseThrow(() -> new GameNotFoundException("No active game found..."));
+    }
+
+    public Game getGameById(Long id) {
+        return this.gameRepository.getGameById(id)
+                .orElseThrow(() -> new GameNotFoundException("No game found with id: " + id.toString()));
+    }
+
+    public void finishGame() {
+        Game game = this.getActiveGame();
+        game.finishGame();
+        this.persistGame(game);
     }
 
 
