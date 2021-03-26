@@ -15,7 +15,7 @@ public class ExceptionHandlerController {
     public ResponseEntity<Map<String, String>> exception(Exception e) {
         HashMap<String, String> map = new HashMap<>();
         map.put("Error", e.getMessage());
-        return new ResponseEntity<>(map, HttpStatus.CONFLICT);
+        return new ResponseEntity<>(map, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(value = GameNotFoundException.class)

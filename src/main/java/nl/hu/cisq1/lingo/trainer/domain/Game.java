@@ -16,6 +16,7 @@ public class Game {
     @Column
     private int score;
     private boolean finished = false;
+
     @Enumerated(EnumType.STRING)
     private GameStatus status;
 
@@ -71,10 +72,6 @@ public class Game {
             this.status = GameStatus.GAME_FINISHED;
             return;
         }
-        if(this.rounds.isEmpty() && this.activeRound == null) {
-            this.status = GameStatus.GAME_STARTING;
-            return;
-        }
         if(this.activeRound != null && this.activeRound.getTries() < 5) {
             this.status = GameStatus.GAME_PLAYING;
         }
@@ -89,6 +86,10 @@ public class Game {
     private void endRound() {
         this.rounds.add(this.activeRound);
         calculateScore();
+        checkStatus();
+        if(this.status.equals(GameStatus.GAME_ELIMINATED)) {
+            this.finishGame();
+        }
     }
 
     private void calculateScore() {

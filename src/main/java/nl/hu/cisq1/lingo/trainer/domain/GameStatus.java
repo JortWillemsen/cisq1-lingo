@@ -4,6 +4,5 @@ public enum GameStatus {
     GAME_FINISHED,
     GAME_PLAYING,
     ROUND_WON,
-    GAME_STARTING,
     GAME_ELIMINATED,
 }

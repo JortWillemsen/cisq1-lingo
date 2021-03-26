@@ -89,7 +89,6 @@ class GameTest {
         this.game.makeAttempt("tests");
         assertNotEquals(GameStatus.GAME_ELIMINATED, this.game.getStatus());
         assertNotEquals(GameStatus.ROUND_WON, this.game.getStatus());
-        assertNotEquals(GameStatus.GAME_STARTING, this.game.getStatus());
     }
     @Test
     @DisplayName("If tries more than five we should end the game.")
@@ -128,10 +127,10 @@ class GameTest {
     }
 
     @Test
-    @DisplayName("Starting the game should set the status to GAME_STARTING")
+    @DisplayName("Starting the game should set the status to GAME_PLAYING")
     void testStartGameStatus() {
         game.beginGame("hollos");
-        assertEquals(GameStatus.GAME_STARTING, game.getStatus());
+        assertEquals(GameStatus.GAME_PLAYING, game.getStatus());
     }
 
     @Test

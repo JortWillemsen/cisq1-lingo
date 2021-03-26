@@ -8,21 +8,5 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class LingoApplication {
     public static void main(String[] args) {
         SpringApplication.run(LingoApplication.class, args);
-
-        //playGame();
-    }
-
-    public static void playGame() {
-        Game game = new Game();
-        System.out.println(game.beginGame("haren"));
-
-        Attempt attempt1 = game.makeAttempt("haler");
-        System.out.println(attempt1.getHint());
-
-        Attempt attempt2 = game.makeAttempt("horen");
-        System.out.println(attempt2.getHint());
-
-        Attempt attempt3 = game.makeAttempt("haren");
-        System.out.println(attempt3.getHint());
     }
 }

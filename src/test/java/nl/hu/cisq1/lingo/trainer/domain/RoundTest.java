@@ -18,8 +18,15 @@ class RoundTest {
 
     @Test
     void testRoundShouldNotBeNullWhenBeginningIt() {
+        this.game.makeAttempt(word);
+
         Round round = this.game.nextRound("worde");
         assertNotNull(round);
+    }
+
+    @Test
+    void testShouldThrowErrorWhenRoundIsAlreadyOngoing() {
+        assertThrows(IllegalStateException.class, () -> this.game.nextRound("worde"));
     }
 
     @Test
