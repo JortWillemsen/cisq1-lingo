@@ -100,6 +100,16 @@ class GameTest {
         this.game.makeAttempt("tests");
         this.game.makeAttempt("tests");
         assertEquals(GameStatus.GAME_ELIMINATED, this.game.getStatus());
+        assertTrue(this.game.isFinished());
+    }
+
+    @Test
+    @DisplayName("Finishing a game should result in finished being true")
+    void testFinishGame() {
+        this.game.beginGame("teste");
+
+        this.game.finishGame();
+        assertTrue(this.game.isFinished());
     }
 
     @ParameterizedTest
@@ -116,6 +126,12 @@ class GameTest {
                 Arguments.of("sixess", 7),
                 Arguments.of("sevenss", 5)
         );
+    }
+
+    @Test
+    @DisplayName("Making an attempt when there is no active round should throw exception")
+    void testShouldThrowExceptionWhenAttemptingOnNoRound() {
+        assertThrows(IllegalStateException.class, () -> game.makeAttempt("appel"));
     }
 
     @Test

@@ -97,7 +97,7 @@ class GameServiceTest {
         gameService.finishGame();
 
         verify(gameRepository, times(1)).save(testGame);
-        assertEquals(GameStatus.GAME_FINISHED, testGame.getStatus());
+        assertEquals(GameStatus.GAME_ELIMINATED, testGame.getStatus());
     }
 
     @ParameterizedTest

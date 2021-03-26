@@ -69,7 +69,7 @@ public class Game {
 
     private void checkStatus() {
         if(this.finished) {
-            this.status = GameStatus.GAME_FINISHED;
+            this.status = GameStatus.GAME_ELIMINATED;
             return;
         }
         if(this.activeRound != null && this.activeRound.getTries() < 5) {
@@ -104,15 +104,13 @@ public class Game {
             throw new IllegalStateException("You cannot make an attempt");
         }
 
-        if(this.getActiveRound().getTries() > 4){
+        Attempt attempt = this.activeRound.makeAttempt(guess);
+
+        checkStatus();
+        if(this.status == GameStatus.ROUND_WON || this.status == GameStatus.GAME_ELIMINATED) {
             this.endRound();
         }
 
-        Attempt attempt = this.activeRound.makeAttempt(guess);
-        if(attempt.correct()) {
-            this.endRound();
-        }
-        checkStatus();
         return attempt;
     }
 
