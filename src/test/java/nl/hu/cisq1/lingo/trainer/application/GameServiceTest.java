@@ -100,6 +100,24 @@ class GameServiceTest {
         assertEquals(GameStatus.GAME_ELIMINATED, testGame.getStatus());
     }
 
+    @Test
+    @DisplayName("StartNextRound should return a Game")
+    void testStartNextRoundShouldReturnGame() {
+        when(wordService.provideRandomWord(6)).thenReturn("appels");
+
+        testGame.beginGame("worde");
+        testGame.makeAttempt("worde");
+        Game game = gameService.startNextRound();
+        assertEquals(Game.class, game.getClass());
+    }
+
+    @Test
+    @DisplayName("GetGameByID should return a Game")
+    void testGetGameByIDShouldReturnGame() {
+        Game game = gameService.getGameById(1L);
+        assertEquals(Game.class, game.getClass());
+    }
+
     @ParameterizedTest
     @MethodSource("provideLenghts")
     @DisplayName("According to the current word we should calculate the lenght of the next word")

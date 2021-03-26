@@ -1,7 +1,5 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
-import org.hibernate.annotations.Cascade;
-
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -31,13 +29,6 @@ public class Game {
         this.activeRound = null;
     }
 
-    public Game beginGame(String startingWord) {
-        this.rounds.clear();
-        checkStatus();
-        this.nextRound(startingWord);
-        return this;
-    }
-
     public Round getActiveRound() {
         return activeRound;
     }
@@ -58,58 +49,57 @@ public class Game {
         return this.finished;
     }
 
+    public Game beginGame(String startingWord) {
+        this.rounds.clear();
+        this.nextRound(startingWord);
+        return this;
+    }
+
     public Round nextRound(String wordToGuess) {
-        if(this.status == GameStatus.GAME_PLAYING) {
+        if(this.status == GameStatus.GAME_PLAYING)
             throw new IllegalStateException("Round is already ongoing");
-        }
+
         this.activeRound = new Round(wordToGuess);
-        checkStatus();
+        updateStatus();
+
         return this.activeRound.beginRound();
     }
 
-    private void checkStatus() {
-        if(this.finished) {
-            this.status = GameStatus.GAME_ELIMINATED;
-            return;
-        }
-        if(this.activeRound != null && this.activeRound.getTries() < 5) {
+    public GameStatus updateStatus() {
+        this.status = null;
+        if(this.finished)
+        { this.status = GameStatus.GAME_ELIMINATED; return this.status; }
+        if(this.rounds.size() == 0 && this.activeRound == null)
+            this.status = GameStatus.GAME_STARTING;
+        if(this.activeRound != null && this.activeRound.getTries() < 5)
             this.status = GameStatus.GAME_PLAYING;
-        }
-        if(this.activeRound != null && this.activeRound.getTries() > 4) {
+        if(this.activeRound != null && this.activeRound.getTries() > 4)
             this.status = GameStatus.GAME_ELIMINATED;
-        }
-        if(this.activeRound != null && this.activeRound.getHint().getHint().equals(this.activeRound.getWordToGuess())) {
+        if(this.activeRound != null && this.activeRound.getHint().getHint().equals(this.activeRound.getWordToGuess()))
             this.status = GameStatus.ROUND_WON;
-        }
+        return this.status;
     }
 
     private void endRound() {
         this.rounds.add(this.activeRound);
         calculateScore();
-        checkStatus();
-        if(this.status.equals(GameStatus.GAME_ELIMINATED)) {
+        if(updateStatus().equals(GameStatus.GAME_ELIMINATED))
             this.finishGame();
-        }
     }
 
     private void calculateScore() {
-        checkStatus();
-        if(this.status == GameStatus.ROUND_WON)
+        if(updateStatus().equals(GameStatus.ROUND_WON))
             this.score += (5*(5 - this.activeRound.getTries()) + 5);
     }
 
     public Attempt makeAttempt(String guess) {
-        checkStatus();
-        if(this.status != GameStatus.GAME_PLAYING) {
+        if(!updateStatus().equals(GameStatus.GAME_PLAYING))
             throw new IllegalStateException("You cannot make an attempt");
-        }
 
         Attempt attempt = this.activeRound.makeAttempt(guess);
 
-        checkStatus();
-        if(this.status == GameStatus.ROUND_WON || this.status == GameStatus.GAME_ELIMINATED) {
+        if(updateStatus().equals(GameStatus.ROUND_WON) || updateStatus().equals(GameStatus.GAME_ELIMINATED))
             this.endRound();
-        }
 
         return attempt;
     }
@@ -124,7 +114,7 @@ public class Game {
 
     public void finishGame() {
         this.finished = true;
-        checkStatus();
+        updateStatus();
     }
 
 

@@ -107,9 +107,16 @@ class GameTest {
     @DisplayName("Finishing a game should result in finished being true")
     void testFinishGame() {
         this.game.beginGame("teste");
-
         this.game.finishGame();
+
         assertTrue(this.game.isFinished());
+    }
+
+    @Test
+    @DisplayName("IsFinished should return a boolean")
+    void testIsFinishedShouldReturnBoolean() {
+        this.game.beginGame("teste");
+        assertFalse(game.isFinished());
     }
 
     @ParameterizedTest
@@ -132,6 +139,12 @@ class GameTest {
     @DisplayName("Making an attempt when there is no active round should throw exception")
     void testShouldThrowExceptionWhenAttemptingOnNoRound() {
         assertThrows(IllegalStateException.class, () -> game.makeAttempt("appel"));
+    }
+
+    @Test
+    @DisplayName("UpdateStatus should return a GameState")
+    void testUpdateStatusShouldReturnGameState() {
+        assertEquals(GameStatus.class, game.updateStatus().getClass());
     }
 
     @Test
