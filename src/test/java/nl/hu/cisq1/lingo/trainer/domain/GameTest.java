@@ -45,7 +45,6 @@ class GameTest {
         game.makeAttempt("hoolos");
         game.makeAttempt("hoolos");
         game.makeAttempt("hoolos");
-        game.makeAttempt("hoolos");
         assertEquals(0, game.getScore());
     }
 
@@ -90,7 +89,6 @@ class GameTest {
         this.game.makeAttempt("tests");
         assertNotEquals(GameStatus.GAME_ELIMINATED, this.game.getStatus());
         assertNotEquals(GameStatus.ROUND_WON, this.game.getStatus());
-        assertNotEquals(GameStatus.GAME_STARTING, this.game.getStatus());
     }
     @Test
     @DisplayName("If tries more than five we should end the game.")
@@ -101,8 +99,24 @@ class GameTest {
         this.game.makeAttempt("tests");
         this.game.makeAttempt("tests");
         this.game.makeAttempt("tests");
-        this.game.makeAttempt("tests");
         assertEquals(GameStatus.GAME_ELIMINATED, this.game.getStatus());
+        assertTrue(this.game.isFinished());
+    }
+
+    @Test
+    @DisplayName("Finishing a game should result in finished being true")
+    void testFinishGame() {
+        this.game.beginGame("teste");
+        this.game.finishGame();
+
+        assertTrue(this.game.isFinished());
+    }
+
+    @Test
+    @DisplayName("IsFinished should return a boolean")
+    void testIsFinishedShouldReturnBoolean() {
+        this.game.beginGame("teste");
+        assertFalse(game.isFinished());
     }
 
     @ParameterizedTest
@@ -122,6 +136,18 @@ class GameTest {
     }
 
     @Test
+    @DisplayName("Making an attempt when there is no active round should throw exception")
+    void testShouldThrowExceptionWhenAttemptingOnNoRound() {
+        assertThrows(IllegalStateException.class, () -> game.makeAttempt("appel"));
+    }
+
+    @Test
+    @DisplayName("UpdateStatus should return a GameState")
+    void testUpdateStatusShouldReturnGameState() {
+        assertEquals(GameStatus.class, game.updateStatus().getClass());
+    }
+
+    @Test
     @DisplayName("Guessing the word correctly should update the score")
     void testCalculateScore() {
         game.beginGame("hollos");
@@ -130,10 +156,10 @@ class GameTest {
     }
 
     @Test
-    @DisplayName("Starting the game should set the status to GAME_STARTING")
+    @DisplayName("Starting the game should set the status to GAME_PLAYING")
     void testStartGameStatus() {
         game.beginGame("hollos");
-        assertEquals(GameStatus.GAME_STARTING, game.getStatus());
+        assertEquals(GameStatus.GAME_PLAYING, game.getStatus());
     }
 
     @Test

@@ -9,18 +9,18 @@ import java.util.List;
 public class Round {
 
     @Id
-    @GeneratedValue(strategy=GenerationType.IDENTITY)
+    @GeneratedValue(strategy=GenerationType.AUTO)
     @Column(name = "id")
     private Long id;
 
     @Column
     private String wordToGuess;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL)
     private List<Attempt> attempts = new ArrayList<>();
     private int tries;
 
-    @Transient
+    @OneToOne(cascade = CascadeType.ALL)
     private Hint hint;
 
     public Round() {}
@@ -59,5 +59,12 @@ public class Round {
 
     public String getWordToGuess() {
         return wordToGuess;
+    }
+
+    public boolean isGuessed() {
+        if(this.attempts.size() > 0) {
+            return this.attempts.get(this.attempts.size() -1).correct();
+        }
+        return false;
     }
 }

@@ -18,8 +18,15 @@ class RoundTest {
 
     @Test
     void testRoundShouldNotBeNullWhenBeginningIt() {
+        this.game.makeAttempt(word);
+
         Round round = this.game.nextRound("worde");
         assertNotNull(round);
+    }
+
+    @Test
+    void testShouldThrowErrorWhenRoundIsAlreadyOngoing() {
+        assertThrows(IllegalStateException.class, () -> this.game.nextRound("worde"));
     }
 
     @Test
@@ -47,10 +54,27 @@ class RoundTest {
     }
 
     @Test
+    void testIsGuessedShouldBeFalseWhenNotGuessed() {
+        this.game.makeAttempt("testo");
+        assertFalse(this.game.getActiveRound().isGuessed());
+    }
+
+    @Test
+    void testIsGuessedShouldBeTrueWhenGuessed() {
+        this.game.makeAttempt("teste");
+        assertTrue(this.game.getActiveRound().isGuessed());
+    }
+
+    @Test
     @DisplayName("Making an attempt should up the tries with 1")
     void testTriesAfterAttempt() {
         this.game.makeAttempt("testo");
         assertEquals(1, this.game.getActiveRound().getTries());
+    }
+
+    @Test
+    void testIsGuessedShouldBeFalseWhenNoAttempts() {
+        assertFalse(this.game.getActiveRound().isGuessed());
     }
 
     @Test

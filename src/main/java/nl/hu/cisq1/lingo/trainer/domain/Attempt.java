@@ -15,7 +15,7 @@ public class Attempt {
     private String guess;
     private String hint;
 
-    @Transient
+    @OneToOne(cascade = CascadeType.ALL)
     private Feedback feedback;
 
 

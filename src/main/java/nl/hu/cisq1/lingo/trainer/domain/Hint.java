@@ -1,13 +1,23 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@Entity
+@Table(name = "hint")
 public class Hint {
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private Long id;
+
+    @Column
     private String wordToGuess;
+
+    @ElementCollection
     private List<Character> characters = new ArrayList<>();
 
+    public Hint() {}
     public Hint(String wordToGuess) {
         this.wordToGuess = wordToGuess;
         this.initialize();
