@@ -17,6 +17,12 @@ class RoundTest {
     }
 
     @Test
+    void testRoundShouldNotBeNullWhenBeginningIt() {
+        Round round = this.game.nextRound("worde");
+        assertNotNull(round);
+    }
+
+    @Test
     @DisplayName("Creating a round should create a hint object")
     void testCreateHint() {
         assertNotNull(this.game.getActiveRound().getHint());
@@ -32,6 +38,12 @@ class RoundTest {
     @DisplayName("Creating a round should have no attempts")
     void testAttemptsAtBeginOfRound() {
         assertEquals(0, this.game.getActiveRound().getAttempts().size());
+    }
+
+    @Test
+    void testAttempts() {
+        this.game.makeAttempt("testo");
+        assertEquals(1, this.game.getActiveRound().getAttempts().size());
     }
 
     @Test

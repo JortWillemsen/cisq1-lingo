@@ -38,6 +38,33 @@ class AttemptTest {
         assertNotNull(attempt.getHint());
     }
 
+    @Test
+    @DisplayName("The returned hint should be as long as the wordToGuess")
+    void testLengthOfHint() {
+        Attempt attempt = this.game.makeAttempt("testo");
+        assertEquals(5, attempt.getHint().length());
+    }
+
+    @Test
+    void testCorrectisTrueWhenWordsMatch() {
+        Attempt attempt = this.game.makeAttempt(this.word);
+        assertTrue(attempt.correct());
+    }
+
+    @Test
+    void testCorrectIsFalseWhenWordsDoNotMatch() {
+        Attempt attempt = this.game.makeAttempt("testo");
+        assertFalse(attempt.correct());
+    }
+
+    @Test
+    @DisplayName("The returned guess should be the same as given guess")
+    void testReturnOfGetGuess() {
+        Attempt attempt = this.game.makeAttempt("testo");
+        assertEquals("testo", attempt.getGuess());
+    }
+
+
     @ParameterizedTest
     @MethodSource("inputAttempts")
     @DisplayName("Attempt should return valid feedback")

@@ -67,6 +67,44 @@ class GameTest {
         );
     }
 
+    @Test
+    @DisplayName("Beginning a game should clear the rounds list")
+    void testGameShouldClearRoundsList() {
+        this.game.nextRound("wordss");
+        this.game.makeAttempt("wordss");
+        this.game.beginGame("wordss");
+        assertTrue(this.game.getRounds().isEmpty());
+    }
+
+    @Test
+    @DisplayName("Beginning a game should return Game object")
+    void testBeginGameShouldReturnGame() {
+        Game returnedGame = this.game.beginGame("Wordss");
+        assertNotNull(returnedGame);
+    }
+
+    @Test
+    @DisplayName("If tries is less than five we should not end the game.")
+    void testTriesLessThenFive() {
+        this.game.beginGame("teste");
+        this.game.makeAttempt("tests");
+        assertNotEquals(GameStatus.GAME_ELIMINATED, this.game.getStatus());
+        assertNotEquals(GameStatus.ROUND_WON, this.game.getStatus());
+        assertNotEquals(GameStatus.GAME_STARTING, this.game.getStatus());
+    }
+    @Test
+    @DisplayName("If tries more than five we should end the game.")
+    void testTriesMoreThenFive() {
+        this.game.beginGame("teste");
+        this.game.makeAttempt("tests");
+        this.game.makeAttempt("tests");
+        this.game.makeAttempt("tests");
+        this.game.makeAttempt("tests");
+        this.game.makeAttempt("tests");
+        this.game.makeAttempt("tests");
+        assertEquals(GameStatus.GAME_ELIMINATED, this.game.getStatus());
+    }
+
     @ParameterizedTest
     @MethodSource("provideLenghts")
     @DisplayName("According to the current word we should calculate the lenght of the next word")
