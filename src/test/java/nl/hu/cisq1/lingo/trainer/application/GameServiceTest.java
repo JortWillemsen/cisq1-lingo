@@ -45,11 +45,19 @@ class GameServiceTest {
     @Test
     @DisplayName("When starting a game, we should return a game object")
     void testStartGameShouldReturnGame() {
+        when(gameRepository.getGameByFinished(false)).thenReturn(Optional.empty());
         Game game = gameService.startGame();
 
         verify(wordService, times(1)).provideRandomWord(5);
         verify(gameRepository, times(1)).save(any(Game.class));
         assertEquals(GameStatus.GAME_PLAYING, game.getStatus());
+    }
+
+    @Test
+    @DisplayName("When starting a game, we should throw when there is a active game present")
+    void testStartGameShouldThrowWhenActiveGame() {
+        assertThrows(IllegalStateException.class, () ->
+                this.gameService.startGame());
     }
 
     @Test

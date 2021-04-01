@@ -22,6 +22,10 @@ public class GameService {
     }
 
     public Game startGame() {
+        if(this.gameRepository.getGameByFinished(false).isPresent()) {
+            throw new IllegalStateException();
+        }
+
         Game game = new Game();
         game.beginGame(this.wordService.provideRandomWord(5));
         this.persistGame(game);
