@@ -5,11 +5,11 @@ import nl.hu.cisq1.lingo.trainer.domain.Attempt;
 import java.util.List;
 
 public class RoundResponseDto {
-    public int tries;
-    public boolean guessed;
-    public String currentHint;
-    public String wordToGuess;
-    public List<Attempt> attempts;
+    private final int tries;
+    private final boolean guessed;
+    private final String currentHint;
+    private final String wordToGuess;
+    private final List<Attempt> attempts;
 
     public RoundResponseDto(int tries, boolean guessed, String hint, String wordToGuess, List<Attempt> attempts) {
         this.tries = tries;
@@ -17,5 +17,25 @@ public class RoundResponseDto {
         this.currentHint = hint;
         this.wordToGuess = wordToGuess;
         this.attempts = attempts;
+    }
+
+    public int getTries() {
+        return tries;
+    }
+
+    public boolean isGuessed() {
+        return guessed;
+    }
+
+    public String getCurrentHint() {
+        return currentHint;
+    }
+
+    public String getWordToGuess() {
+        return wordToGuess;
+    }
+
+    public List<Attempt> getAttempts() {
+        return attempts;
     }
 }

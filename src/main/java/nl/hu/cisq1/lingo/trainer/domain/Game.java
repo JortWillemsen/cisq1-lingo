@@ -71,7 +71,7 @@ public class Game {
         this.status = null;
         if(this.finished)
         { this.status = GameStatus.GAME_ELIMINATED; return this.status; }
-        if(this.rounds.size() == 0 && this.activeRound == null)
+        if(this.rounds.isEmpty() && this.activeRound == null)
             this.status = GameStatus.GAME_STARTING;
         if(this.activeRound != null && this.activeRound.getTries() < 5)
             this.status = GameStatus.GAME_PLAYING;

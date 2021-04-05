@@ -80,7 +80,7 @@ class GameServiceTest {
     void testShouldThrowWhenNoGameWithId() {
         when(gameRepository.getGameById(anyLong())).thenReturn(Optional.empty());
 
-        assertThrows(GameNotFoundException.class, () -> gameService.getGameById(anyLong()));
+        assertThrows(GameNotFoundException.class, () -> gameService.getGameById(1L));
     }
 
     @Test

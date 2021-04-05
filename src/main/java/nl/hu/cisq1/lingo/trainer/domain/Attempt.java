@@ -25,7 +25,7 @@ public class Attempt {
     public Attempt(String guess, String wordToGuess, String hint) {
         this.guess = guess;
 
-        if (guess == null || !(guess.length() == wordToGuess.length())) {
+        if (guess == null || guess.length() != wordToGuess.length()) {
             throw new InvalidAttemptException("Attempt is not valid.");
         }
 

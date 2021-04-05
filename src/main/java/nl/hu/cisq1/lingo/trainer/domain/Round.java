@@ -62,7 +62,7 @@ public class Round {
     }
 
     public boolean isGuessed() {
-        if(this.attempts.size() > 0) {
+        if(!this.attempts.isEmpty()) {
             return this.attempts.get(this.attempts.size() -1).correct();
         }
         return false;
