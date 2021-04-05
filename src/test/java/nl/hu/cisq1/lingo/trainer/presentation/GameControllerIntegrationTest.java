@@ -22,6 +22,10 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import javax.transaction.Transactional;
 
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc
@@ -132,5 +136,56 @@ class GameControllerIntegrationTest {
 
         this.mockMvc.perform(request)
                 .andExpect(status().isConflict());
+    }
+
+    @Test
+    void testGetRoundInfoShouldReturnInfo() throws Exception {
+        this.gameService.startGame();
+
+        var request = MockMvcRequestBuilders.get("/lingo/round");
+
+        this.mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.tries").value(0))
+                .andExpect(jsonPath("$.guessed").value(false))
+                .andExpect(jsonPath("$.currentHint").value(this.gameService.getActiveGame().getActiveRound().getHint().getHint()))
+                .andExpect(jsonPath("$.wordToGuess").value(this.gameService.getActiveGame().getActiveRound().getWordToGuess()))
+                .andExpect(jsonPath("$.attempts").exists());
+    }
+
+    @Test
+    void testGetActiveGameInfoShouldReturnInfo() throws Exception {
+        this.gameService.startGame();
+
+        var request = MockMvcRequestBuilders.get("/lingo/game/active");
+
+        this.mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(this.gameService.getActiveGame().getId()))
+                .andExpect(jsonPath("$.score").value(0))
+                .andExpect(jsonPath("$.numberOfRounds").value(0))
+                .andExpect(jsonPath("$.activeRound").exists())
+                .andExpect(jsonPath("$.status").value("GAME_PLAYING"))
+                .andExpect(jsonPath("$.finished").value(false));
+    }
+
+    @Test
+    void testGetGameInfoShouldReturnInfo() throws Exception {
+        Game game = this.gameService.startGame();
+        this.gameService.finishGame();
+
+        var request = MockMvcRequestBuilders.get("/lingo/game/" + game.getId());
+
+        this.mockMvc.perform(request)
+                .andExpect(status().isOk())
+                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+                .andExpect(jsonPath("$.id").value(game.getId()))
+                .andExpect(jsonPath("$.score").value(0))
+                .andExpect(jsonPath("$.numberOfRounds").value(0))
+                .andExpect(jsonPath("$.activeRound").exists())
+                .andExpect(jsonPath("$.status").value("GAME_ELIMINATED"))
+                .andExpect(jsonPath("$.finished").value(true));
     }
 }
