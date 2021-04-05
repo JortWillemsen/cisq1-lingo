@@ -119,17 +119,17 @@
                                             <counter>INSTRUCTION</counter>
                                             <value>COVEREDRATIO</value>
                                             <!--                                         Needs to be 0.90-->
-                                            <minimum>0.80</minimum>
+                                            <minimum>0.95</minimum>
                                         </limit>
                                         <limit>
                                             <counter>BRANCH</counter>
                                             <value>COVEREDRATIO</value>
-                                            <minimum>0.90</minimum>
+                                            <minimum>0.95</minimum>
                                         </limit>
                                         <limit>
                                             <counter>CLASS</counter>
                                             <value>MISSEDCOUNT</value>
-                                            <maximum>4</maximum>
+                                            <maximum>0</maximum>
                                         </limit>
                                     </limits>
                                 </rule>
