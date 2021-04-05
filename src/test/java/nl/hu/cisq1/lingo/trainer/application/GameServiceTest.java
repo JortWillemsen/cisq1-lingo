@@ -6,6 +6,7 @@ import nl.hu.cisq1.lingo.trainer.domain.Attempt;
 import nl.hu.cisq1.lingo.trainer.domain.Game;
 import nl.hu.cisq1.lingo.trainer.domain.GameStatus;
 import nl.hu.cisq1.lingo.trainer.exception.GameNotFoundException;
+import nl.hu.cisq1.lingo.trainer.exception.IllegalStatusException;
 import nl.hu.cisq1.lingo.words.application.WordService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -56,7 +57,7 @@ class GameServiceTest {
     @Test
     @DisplayName("When starting a game, we should throw when there is a active game present")
     void testStartGameShouldThrowWhenActiveGame() {
-        assertThrows(IllegalStateException.class, () ->
+        assertThrows(IllegalStatusException.class, () ->
                 this.gameService.startGame());
     }
 

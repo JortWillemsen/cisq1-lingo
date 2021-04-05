@@ -1,5 +1,7 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
+import nl.hu.cisq1.lingo.trainer.exception.InvalidAttemptException;
+
 import javax.persistence.*;
 import java.util.List;
 
@@ -22,6 +24,11 @@ public class Attempt {
     public Attempt() { }
     public Attempt(String guess, String wordToGuess, String hint) {
         this.guess = guess;
+
+        if (guess == null || !(guess.length() == wordToGuess.length())) {
+            throw new InvalidAttemptException("Attempt is not valid.");
+        }
+
         this.feedback = new Feedback(guess, wordToGuess);
         this.hint = hint;
     }

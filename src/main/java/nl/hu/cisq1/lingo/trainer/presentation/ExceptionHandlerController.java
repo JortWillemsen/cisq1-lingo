@@ -1,6 +1,7 @@
 package nl.hu.cisq1.lingo.trainer.presentation;
 
 import nl.hu.cisq1.lingo.trainer.exception.GameNotFoundException;
+import nl.hu.cisq1.lingo.trainer.exception.IllegalStatusException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -25,8 +26,8 @@ public class ExceptionHandlerController {
         return new ResponseEntity<>(map, HttpStatus.NOT_FOUND);
     }
 
-    @ExceptionHandler(value = IllegalStateException.class)
-    public ResponseEntity<Map<String, String>> illegalStateException(Exception e) {
+    @ExceptionHandler(IllegalStatusException.class)
+    public ResponseEntity<Map<String, String>> IllegalStatusException(Exception e) {
         HashMap<String, String> map = new HashMap<>();
         map.put("Error", e.getMessage());
         return new ResponseEntity<>(map, HttpStatus.CONFLICT);

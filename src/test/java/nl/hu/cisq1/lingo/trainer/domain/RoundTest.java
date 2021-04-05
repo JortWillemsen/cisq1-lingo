@@ -1,5 +1,6 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
+import nl.hu.cisq1.lingo.trainer.exception.IllegalStatusException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -26,7 +27,7 @@ class RoundTest {
 
     @Test
     void testShouldThrowErrorWhenRoundIsAlreadyOngoing() {
-        assertThrows(IllegalStateException.class, () -> this.game.nextRound("worde"));
+        assertThrows(IllegalStatusException.class, () -> this.game.nextRound("worde"));
     }
 
     @Test

@@ -1,5 +1,6 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
+import nl.hu.cisq1.lingo.trainer.exception.IllegalStatusException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -138,7 +139,7 @@ class GameTest {
     @Test
     @DisplayName("Making an attempt when there is no active round should throw exception")
     void testShouldThrowExceptionWhenAttemptingOnNoRound() {
-        assertThrows(IllegalStateException.class, () -> game.makeAttempt("appel"));
+        assertThrows(IllegalStatusException.class, () -> game.makeAttempt("appel"));
     }
 
     @Test

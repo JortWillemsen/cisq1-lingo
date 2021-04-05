@@ -1,5 +1,7 @@
 package nl.hu.cisq1.lingo.trainer.domain;
 
+import nl.hu.cisq1.lingo.trainer.exception.IllegalStatusException;
+
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -57,7 +59,7 @@ public class Game {
 
     public Round nextRound(String wordToGuess) {
         if(this.status == GameStatus.GAME_PLAYING)
-            throw new IllegalStateException("Round is already ongoing");
+            throw new IllegalStatusException("Round is already ongoing");
 
         this.activeRound = new Round(wordToGuess);
         updateStatus();
@@ -94,7 +96,7 @@ public class Game {
 
     public Attempt makeAttempt(String guess) {
         if(!updateStatus().equals(GameStatus.GAME_PLAYING))
-            throw new IllegalStateException("You cannot make an attempt");
+            throw new IllegalStatusException("You cannot make an attempt");
 
         Attempt attempt = this.activeRound.makeAttempt(guess);
 

@@ -28,7 +28,7 @@ public class GameController {
         return new StartRoundResponseDto(game.getActiveRound().getHint().getHint());
     }
 
-    @PutMapping("/attempt")
+    @PostMapping("/attempt")
     public AttemptResponseDto makeAttempt(@RequestBody AttemptRequestDto requestDto) {
         Attempt attempt = this.gameService.makeAttempt(requestDto.guess);
         return new AttemptResponseDto(attempt.getHint(), attempt.getGuess(), attempt.getFeedback());

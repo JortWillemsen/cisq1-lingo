@@ -6,6 +6,7 @@ import nl.hu.cisq1.lingo.trainer.domain.Attempt;
 import nl.hu.cisq1.lingo.trainer.domain.Game;
 import nl.hu.cisq1.lingo.trainer.domain.GameStatus;
 import nl.hu.cisq1.lingo.trainer.exception.GameNotFoundException;
+import nl.hu.cisq1.lingo.trainer.exception.IllegalStatusException;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -49,7 +50,7 @@ class GameServiceIntegrationTest {
     @Test
     void testStartGameShouldThrowWhenRoundActive() {
         this.gameService.startGame();
-        assertThrows(IllegalStateException.class,
+        assertThrows(IllegalStatusException.class,
                 () -> this.gameService.startNextRound());
     }
 
@@ -64,7 +65,7 @@ class GameServiceIntegrationTest {
     void testStartNextRoundShouldTrowWhenRoundActive() {
         this.gameService.startGame();
 
-        assertThrows(IllegalStateException.class, () ->
+        assertThrows(IllegalStatusException.class, () ->
                 this.gameService.startNextRound());
     }
 
