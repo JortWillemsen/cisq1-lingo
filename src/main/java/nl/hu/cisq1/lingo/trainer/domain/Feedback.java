@@ -26,7 +26,6 @@ public class Feedback {
     }
 
     public List<Mark> calculate() {
-        this.marks.clear();
         for(int i = 0; i < this.wordToGuess.length(); i++) {
             if(!Character.isLetter(this.guess.charAt(i))) {
                 this.marks.add(Mark.INVALID);

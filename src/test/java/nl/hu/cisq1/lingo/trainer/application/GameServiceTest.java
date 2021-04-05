@@ -6,6 +6,7 @@ import nl.hu.cisq1.lingo.trainer.domain.Attempt;
 import nl.hu.cisq1.lingo.trainer.domain.Game;
 import nl.hu.cisq1.lingo.trainer.domain.GameStatus;
 import nl.hu.cisq1.lingo.trainer.exception.GameNotFoundException;
+import nl.hu.cisq1.lingo.trainer.exception.IllegalStatusException;
 import nl.hu.cisq1.lingo.words.application.WordService;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -45,11 +46,19 @@ class GameServiceTest {
     @Test
     @DisplayName("When starting a game, we should return a game object")
     void testStartGameShouldReturnGame() {
+        when(gameRepository.getGameByFinished(false)).thenReturn(Optional.empty());
         Game game = gameService.startGame();
 
         verify(wordService, times(1)).provideRandomWord(5);
         verify(gameRepository, times(1)).save(any(Game.class));
         assertEquals(GameStatus.GAME_PLAYING, game.getStatus());
+    }
+
+    @Test
+    @DisplayName("When starting a game, we should throw when there is a active game present")
+    void testStartGameShouldThrowWhenActiveGame() {
+        assertThrows(IllegalStatusException.class, () ->
+                this.gameService.startGame());
     }
 
     @Test
@@ -71,7 +80,7 @@ class GameServiceTest {
     void testShouldThrowWhenNoGameWithId() {
         when(gameRepository.getGameById(anyLong())).thenReturn(Optional.empty());
 
-        assertThrows(GameNotFoundException.class, () -> gameService.getGameById(anyLong()));
+        assertThrows(GameNotFoundException.class, () -> gameService.getGameById(1L));
     }
 
     @Test

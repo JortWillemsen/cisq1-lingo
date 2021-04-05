@@ -4,6 +4,7 @@ import nl.hu.cisq1.lingo.trainer.data.SpringGameRepository;
 import nl.hu.cisq1.lingo.trainer.domain.Attempt;
 import nl.hu.cisq1.lingo.trainer.domain.Game;
 import nl.hu.cisq1.lingo.trainer.exception.GameNotFoundException;
+import nl.hu.cisq1.lingo.trainer.exception.IllegalStatusException;
 import nl.hu.cisq1.lingo.words.application.WordService;
 import org.springframework.stereotype.Service;
 
@@ -22,6 +23,10 @@ public class GameService {
     }
 
     public Game startGame() {
+        if(this.gameRepository.getGameByFinished(false).isPresent()) {
+            throw new IllegalStatusException("Game is already ongoing");
+        }
+
         Game game = new Game();
         game.beginGame(this.wordService.provideRandomWord(5));
         this.persistGame(game);
