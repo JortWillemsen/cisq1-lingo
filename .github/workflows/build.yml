@@ -1,6 +1,10 @@
 name: Java CI
 
-on: [push]
+on:
+  schedule:
+    - cron: '0 0,18 1 * *'
+  push:
+  pull_request:
 
 jobs:
   build:
