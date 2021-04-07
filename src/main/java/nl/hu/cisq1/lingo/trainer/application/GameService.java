@@ -23,33 +23,25 @@ public class GameService {
     }
 
     public Game startGame() {
-        if(this.gameRepository.getGameByFinished(false).isPresent()) {
-            throw new IllegalStatusException("Game is already ongoing");
-        }
-
         Game game = new Game();
         game.beginGame(this.wordService.provideRandomWord(5));
         this.persistGame(game);
         return game;
     }
 
-    public Attempt makeAttempt(String guess) {
-        Game game = this.getActiveGame();
+    public Attempt makeAttempt(String guess, Long id) {
+        wordService.wordExists(guess);
+        Game game = this.getGameById(id);
         Attempt attempt = game.makeAttempt(guess);
         this.persistGame(game);
         return attempt;
     }
 
-    public Game startNextRound() {
-        Game game = this.getActiveGame();
+    public Game startNextRound(Long id) {
+        Game game = this.getGameById(id);
         game.nextRound(wordService.provideRandomWord(game.provideLenghtOfNewWord()));
         this.persistGame(game);
         return game;
-    }
-
-    public Game getActiveGame() {
-        return this.gameRepository.getGameByFinished(false)
-                .orElseThrow(() -> new GameNotFoundException("No active game found..."));
     }
 
     public Game getGameById(Long id) {
@@ -57,8 +49,8 @@ public class GameService {
                 .orElseThrow(() -> new GameNotFoundException("No game found with id: " + id.toString()));
     }
 
-    public void finishGame() {
-        Game game = this.getActiveGame();
+    public void finishGame(Long id) {
+        Game game = this.getGameById(id);
         game.finishGame();
         this.persistGame(game);
     }

@@ -34,7 +34,7 @@ class GameServiceTest {
         when(wordService.provideRandomWord(5)).thenReturn("appel");
         when(gameRepository.getGameByFinished(false)).thenReturn(Optional.of(testGame));
         when(gameRepository.getGameById(1L)).thenReturn(Optional.of(testGame));
-
+        testGame.setId(1L);
         gameService = new GameService(gameRepository, wordService);
     }
 
@@ -55,24 +55,9 @@ class GameServiceTest {
     }
 
     @Test
-    @DisplayName("When starting a game, we should throw when there is a active game present")
-    void testStartGameShouldThrowWhenActiveGame() {
-        assertThrows(IllegalStatusException.class, () ->
-                this.gameService.startGame());
-    }
-
-    @Test
     @DisplayName("When getting a game with id 1 we should return a game object")
     void testShouldReturnGameWhenId() {
         assertDoesNotThrow(() -> gameService.getGameById(1L));
-    }
-
-    @Test
-    @DisplayName("Should throw GameNotFound exception when there is not active game")
-    void testShouldThrowWhenNoActiveGame() {
-        when(gameRepository.getGameByFinished(false)).thenReturn(Optional.empty());
-
-        assertThrows(GameNotFoundException.class, () -> gameService.getActiveGame());
     }
 
     @Test
@@ -84,18 +69,12 @@ class GameServiceTest {
     }
 
     @Test
-    @DisplayName("Should return a game object when getting the active game")
-    void testGetActiveGameShouldReturnGame() {
-        assertDoesNotThrow(() -> gameService.getActiveGame());
-    }
-
-    @Test
     @DisplayName("Making an attempt should return an attempt")
     void testMakeAttemptShouldReturnAttempt() {
         testGame.beginGame("appel");
-        Attempt attempt = gameService.makeAttempt("apper");
+        Attempt attempt = gameService.makeAttempt("apper", testGame.getId());
 
-        verify(gameRepository, times(1)).getGameByFinished(false);
+        verify(gameRepository, times(1)).getGameById(1L);
         verify(gameRepository, times(1)).save(any(Game.class));
         assertEquals("appe.", attempt.getHint());
     }
@@ -103,7 +82,8 @@ class GameServiceTest {
     @Test
     @DisplayName("Finishing a game should persist the game and change the state to GAME_FINISHED.")
     void testFinishGameShouldSetStateAndPersist(){
-        gameService.finishGame();
+
+        gameService.finishGame(testGame.getId());
 
         verify(gameRepository, times(1)).save(testGame);
         assertEquals(GameStatus.GAME_ELIMINATED, testGame.getStatus());
@@ -116,7 +96,7 @@ class GameServiceTest {
 
         testGame.beginGame("worde");
         testGame.makeAttempt("worde");
-        Game game = gameService.startNextRound();
+        Game game = gameService.startNextRound(testGame.getId());
         assertEquals(Game.class, game.getClass());
     }
 
@@ -134,7 +114,7 @@ class GameServiceTest {
         when(wordService.provideRandomWord(nextLenght)).thenReturn(word);
         testGame.beginGame(word);
         testGame.makeAttempt(word);
-        gameService.startNextRound();
+        gameService.startNextRound(testGame.getId());
         verify(wordService, times(1)).provideRandomWord(nextLenght);
         verify(gameRepository, times(1)).save(any(Game.class));
     }
