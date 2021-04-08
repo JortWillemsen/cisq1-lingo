@@ -24,7 +24,10 @@ public class WordService {
     }
 
     public void wordExists(String word) {
-        this.wordRepository.findWordByValue(word).orElseThrow(
-                () -> new InvalidAttemptException("Guess is not a valid word."));
+        if(this.wordRepository.findWordByValue(word).isEmpty()) {
+            throw new InvalidAttemptException(word + " is not a valid word.");
+        } else {
+            System.out.println(word + " is a valid word.");
+        }
     }
 }
