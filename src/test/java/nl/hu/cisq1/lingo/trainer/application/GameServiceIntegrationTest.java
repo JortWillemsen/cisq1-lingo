@@ -74,9 +74,9 @@ class GameServiceIntegrationTest {
     void testMakeAttemptShouldReturnAttempt() {
         testGame.beginGame("appel");
         this.gameRepository.save(testGame);
-        Attempt attempt = gameService.makeAttempt("alles", testGame.getId());
+        Attempt attempt = gameService.makeAttempt("aarde", testGame.getId());
 
-        assertEquals("a..e.", attempt.getHint());
+        assertEquals("a....", attempt.getHint());
     }
 
     @Test
