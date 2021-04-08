@@ -72,7 +72,7 @@ class GameControllerIntegrationTest {
         Game game = this.gameService.startGame();
 
         var body = new AttemptRequestDto();
-        body.guess = "aarde";
+        body.guess = "pizza";
         RequestBuilder request = MockMvcRequestBuilders.post(String.format("/lingo/game/%d/attempt", game.getId()))
                 .content(this.objectMapper.writeValueAsString(body)).contentType(MediaType.APPLICATION_JSON);
 
@@ -102,7 +102,7 @@ class GameControllerIntegrationTest {
     @Test
     void testMakeAttemptShouldThrow() throws Exception {
         var body = new AttemptRequestDto();
-        body.guess = "aarde";
+        body.guess = "pizza";
 
         var request = MockMvcRequestBuilders.post(String.format("/lingo/game/%d/attempt", 1))
                 .content(this.objectMapper.writeValueAsString(body)).contentType(MediaType.APPLICATION_JSON);

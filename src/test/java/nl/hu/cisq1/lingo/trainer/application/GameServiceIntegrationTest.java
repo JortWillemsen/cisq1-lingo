@@ -15,11 +15,7 @@ import org.springframework.context.annotation.Import;
 
 import javax.transaction.Transactional;
 
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 
 @SpringBootTest
@@ -74,7 +70,7 @@ class GameServiceIntegrationTest {
     void testMakeAttemptShouldReturnAttempt() {
         testGame.beginGame("appel");
         this.gameRepository.save(testGame);
-        Attempt attempt = gameService.makeAttempt("aarde", testGame.getId());
+        Attempt attempt = gameService.makeAttempt("pizza", testGame.getId());
 
         assertEquals("a....", attempt.getHint());
     }
