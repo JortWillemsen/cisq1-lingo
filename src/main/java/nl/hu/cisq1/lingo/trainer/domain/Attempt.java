@@ -26,7 +26,7 @@ public class Attempt {
         this.guess = guess;
 
         if (guess == null || guess.length() != wordToGuess.length()) {
-            throw new InvalidAttemptException("Attempt is not valid.");
+            throw new InvalidAttemptException("Length of guess is not correct.");
         }
 
         this.feedback = new Feedback(guess, wordToGuess);

@@ -22,10 +22,6 @@ import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import javax.transaction.Transactional;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @AutoConfigureMockMvc
@@ -61,10 +57,10 @@ class GameControllerIntegrationTest {
 
     @Test
     void testShouldStartNewRound() throws Exception {
-        this.gameService.startGame();
-        this.gameService.makeAttempt(this.gameService.getActiveGame().getActiveRound().getWordToGuess());
+        Game game = this.gameService.startGame();
+        this.gameService.makeAttempt(this.gameService.getGameById(game.getId()).getActiveRound().getWordToGuess(), game.getId());
 
-        var request = MockMvcRequestBuilders.post("/lingo/round");
+        var request = MockMvcRequestBuilders.post(String.format("/lingo/game/%d/round", game.getId()));
 
         this.mockMvc.perform(request)
                 .andExpect(status().isOk())
@@ -73,11 +69,11 @@ class GameControllerIntegrationTest {
 
     @Test
     void testMakeAttemptShouldReturnAttempt() throws Exception {
-        this.gameService.startGame();
+        Game game = this.gameService.startGame();
 
         var body = new AttemptRequestDto();
-        body.guess = "apper";
-        RequestBuilder request = MockMvcRequestBuilders.post("/lingo/attempt")
+        body.guess = "pizza";
+        RequestBuilder request = MockMvcRequestBuilders.post(String.format("/lingo/game/%d/attempt", game.getId()))
                 .content(this.objectMapper.writeValueAsString(body)).contentType(MediaType.APPLICATION_JSON);
 
         this.mockMvc.perform(request)
@@ -87,9 +83,9 @@ class GameControllerIntegrationTest {
 
     @Test
     void testFinishGameShouldReturn200() throws Exception {
-        this.gameService.startGame();
+        Game game = this.gameService.startGame();
 
-        var request = MockMvcRequestBuilders.patch("/lingo/game/active/finish");
+        var request = MockMvcRequestBuilders.patch(String.format("/lingo/game/%d/finish", game.getId()));
 
         this.mockMvc.perform(request)
                 .andExpect(status().isOk());
@@ -97,27 +93,18 @@ class GameControllerIntegrationTest {
 
     @Test
     void testFinishGameShouldThrow() throws Exception {
-        var request = MockMvcRequestBuilders.patch("/lingo/game/active/finish");
+        var request = MockMvcRequestBuilders.patch(String.format("/lingo/game/%d/finish", 1));
 
         this.mockMvc.perform(request)
                 .andExpect(status().isNotFound());
     }
 
     @Test
-    void testStartGameShouldThrow() throws Exception {
-        this.gameService.startGame();
-
-        var request = MockMvcRequestBuilders.post("/lingo/game");
-        this.mockMvc.perform(request)
-                .andExpect(status().isConflict());
-    }
-
-    @Test
     void testMakeAttemptShouldThrow() throws Exception {
         var body = new AttemptRequestDto();
-        body.guess = "apper";
+        body.guess = "pizza";
 
-        var request = MockMvcRequestBuilders.post("/lingo/attempt")
+        var request = MockMvcRequestBuilders.post(String.format("/lingo/game/%d/attempt", 1))
                 .content(this.objectMapper.writeValueAsString(body)).contentType(MediaType.APPLICATION_JSON);
 
         this.mockMvc.perform(request)
@@ -126,12 +113,12 @@ class GameControllerIntegrationTest {
 
     @Test
     void testMakeAttemptShouldThrowInvalidAttemptException() throws Exception {
-        this.gameService.startGame();
+        Game game = this.gameService.startGame();
 
         var body = new AttemptRequestDto();
-        body.guess = "appere";
+        body.guess = "aanbod";
 
-        var request = MockMvcRequestBuilders.post("/lingo/attempt")
+        var request = MockMvcRequestBuilders.post(String.format("/lingo/game/%d/attempt", game.getId()))
                 .content(this.objectMapper.writeValueAsString(body)).contentType(MediaType.APPLICATION_JSON);
 
         this.mockMvc.perform(request)
@@ -140,43 +127,26 @@ class GameControllerIntegrationTest {
 
     @Test
     void testGetRoundInfoShouldReturnInfo() throws Exception {
-        this.gameService.startGame();
+        Game game = this.gameService.startGame();
 
-        var request = MockMvcRequestBuilders.get("/lingo/round");
+        var request = MockMvcRequestBuilders.get(String.format("/lingo/game/%d/round", game.getId()));
 
         this.mockMvc.perform(request)
                 .andExpect(status().isOk())
                 .andExpect(content().contentType(MediaType.APPLICATION_JSON))
                 .andExpect(jsonPath("$.tries").value(0))
                 .andExpect(jsonPath("$.guessed").value(false))
-                .andExpect(jsonPath("$.currentHint").value(this.gameService.getActiveGame().getActiveRound().getHint().getHint()))
-                .andExpect(jsonPath("$.wordToGuess").value(this.gameService.getActiveGame().getActiveRound().getWordToGuess()))
+                .andExpect(jsonPath("$.currentHint").value(this.gameService.getGameById(game.getId()).getActiveRound().getHint().getHint()))
+                .andExpect(jsonPath("$.wordToGuess").value(this.gameService.getGameById(game.getId()).getActiveRound().getWordToGuess()))
                 .andExpect(jsonPath("$.attempts").exists());
-    }
-
-    @Test
-    void testGetActiveGameInfoShouldReturnInfo() throws Exception {
-        this.gameService.startGame();
-
-        var request = MockMvcRequestBuilders.get("/lingo/game/active");
-
-        this.mockMvc.perform(request)
-                .andExpect(status().isOk())
-                .andExpect(content().contentType(MediaType.APPLICATION_JSON))
-                .andExpect(jsonPath("$.id").value(this.gameService.getActiveGame().getId()))
-                .andExpect(jsonPath("$.score").value(0))
-                .andExpect(jsonPath("$.numberOfRounds").value(0))
-                .andExpect(jsonPath("$.activeRound").exists())
-                .andExpect(jsonPath("$.status").value("GAME_PLAYING"))
-                .andExpect(jsonPath("$.finished").value(false));
     }
 
     @Test
     void testGetGameInfoShouldReturnInfo() throws Exception {
         Game game = this.gameService.startGame();
-        this.gameService.finishGame();
+        this.gameService.finishGame(game.getId());
 
-        var request = MockMvcRequestBuilders.get("/lingo/game/" + game.getId());
+        var request = MockMvcRequestBuilders.get(String.format("/lingo/game/%d", game.getId()));
 
         this.mockMvc.perform(request)
                 .andExpect(status().isOk())

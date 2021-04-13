@@ -51,6 +51,10 @@ public class Game {
         return this.finished;
     }
 
+    public void setId(Long id) {
+        this.id = id;
+    }
+
     public Game beginGame(String startingWord) {
         this.rounds.clear();
         this.nextRound(startingWord);

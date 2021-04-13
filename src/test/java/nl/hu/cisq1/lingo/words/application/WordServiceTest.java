@@ -1,5 +1,6 @@
 package nl.hu.cisq1.lingo.words.application;
 
+import nl.hu.cisq1.lingo.trainer.exception.InvalidAttemptException;
 import nl.hu.cisq1.lingo.words.data.SpringWordRepository;
 import nl.hu.cisq1.lingo.words.domain.Word;
 import nl.hu.cisq1.lingo.words.domain.exception.WordLengthNotSupportedException;
@@ -38,6 +39,21 @@ class WordServiceTest {
         String result = service.provideRandomWord(wordLength);
 
         assertEquals(word, result);
+    }
+
+    @Test
+    @DisplayName("Giving an invalid word should throw an exception")
+    void testInvalidWord() {
+        SpringWordRepository mockRepository = mock(SpringWordRepository.class);
+        when(mockRepository.findWordByValue(anyString()))
+                .thenReturn(Optional.empty());
+
+        WordService service = new WordService(mockRepository);
+
+        assertThrows(
+                InvalidAttemptException.class,
+                () -> service.wordExists(anyString())
+        );
     }
 
     @Test

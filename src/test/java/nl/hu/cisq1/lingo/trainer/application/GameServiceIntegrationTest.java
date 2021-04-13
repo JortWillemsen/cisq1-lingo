@@ -7,6 +7,7 @@ import nl.hu.cisq1.lingo.trainer.domain.Game;
 import nl.hu.cisq1.lingo.trainer.domain.GameStatus;
 import nl.hu.cisq1.lingo.trainer.exception.GameNotFoundException;
 import nl.hu.cisq1.lingo.trainer.exception.IllegalStatusException;
+import nl.hu.cisq1.lingo.trainer.exception.InvalidAttemptException;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -14,11 +15,7 @@ import org.springframework.context.annotation.Import;
 
 import javax.transaction.Transactional;
 
-import java.util.Optional;
-
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 
 @SpringBootTest
@@ -41,41 +38,25 @@ class GameServiceIntegrationTest {
     }
 
     @Test
-    void testShouldStartGameWhenNoGameActive() {
-        assertDoesNotThrow(() ->
-                this.gameService.startGame());
-        assertNotNull(this.gameService.getActiveGame());
-    }
-
-    @Test
     void testStartGameShouldThrowWhenRoundActive() {
-        this.gameService.startGame();
+        Game game = this.gameService.startGame();
         assertThrows(IllegalStatusException.class,
-                () -> this.gameService.startNextRound());
+                () -> this.gameService.startNextRound(game.getId()));
     }
 
     @Test
     void testStartNextRoundShouldReturnGame() {
         Game game = this.gameService.startGame();
         game.makeAttempt(game.getActiveRound().getWordToGuess());
-        assertEquals(Game.class, this.gameService.startNextRound().getClass());
+        assertEquals(Game.class, this.gameService.startNextRound(game.getId()).getClass());
     }
 
     @Test
     void testStartNextRoundShouldTrowWhenRoundActive() {
-        this.gameService.startGame();
+        Game game = this.gameService.startGame();
 
         assertThrows(IllegalStatusException.class, () ->
-                this.gameService.startNextRound());
-    }
-
-    @Test
-    @DisplayName("When getting a game with id we should return a game object")
-    void testShouldReturnGameWhenId() {
-        this.gameService.startGame();
-        Long id = this.gameService.getActiveGame().getId();
-
-        assertDoesNotThrow(() -> this.gameService.getGameById(id));
+                this.gameService.startNextRound(game.getId()));
     }
 
     @Test
@@ -89,18 +70,27 @@ class GameServiceIntegrationTest {
     void testMakeAttemptShouldReturnAttempt() {
         testGame.beginGame("appel");
         this.gameRepository.save(testGame);
-        Attempt attempt = gameService.makeAttempt("apper");
+        Attempt attempt = gameService.makeAttempt("pizza", testGame.getId());
 
-        assertEquals("appe.", attempt.getHint());
+        assertEquals("a....", attempt.getHint());
+    }
+
+    @Test
+    @DisplayName("Making an attempt with an invalid word should throw exception")
+    void testShouldThrowWhenInvalidAttempt() {
+        assertThrows(InvalidAttemptException.class,
+                () -> gameService.makeAttempt("anius", testGame.getId()));
     }
 
     @Test
     @DisplayName("Finishing a game should persist the game and change the state to GAME_FINISHED.")
     void testFinishGameShouldSetActiveGameToNull(){
-        this.gameService.startGame();
-        this.gameService.finishGame();
+        Game game = this.gameService.startGame();
+        this.gameService.finishGame(game.getId());
 
-        assertThrows(GameNotFoundException.class, () ->
-                this.gameService.getActiveGame());
+        Game foundGame = this.gameRepository.getGameById(game.getId()).orElseThrow(
+                () -> new GameNotFoundException("Game not found"));
+
+        assertTrue(foundGame.isFinished());
     }
 }
